@@ -1,0 +1,9 @@
+streamlit
+pandas
+bcrypt
+scikit-learn
+numpy
+scipy
+joblib
+threadpoolctl
+python-aiml
