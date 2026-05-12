@@ -6,4 +6,4 @@ numpy
 scipy
 joblib
 threadpoolctl
-python-aiml
+git+https://github.com/paulovn/python-aiml.git
