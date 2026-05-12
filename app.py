@@ -120,29 +120,34 @@ def calculate_tdee(age, height, weight, gender, activity_level):
 
 
 # Content-Based Recommender
-def get_recipe_recommendations(title, df, cosine_sim, indices, top_n=5):
+def get_recipe_recommendations(title, df, tfidf_matrix, indices, top_n=5):
+
     if title not in indices:
-        return pd.DataFrame()  # Return empty if title not found
+        return pd.DataFrame()
 
     idx = indices[title]
-    sim_scores = list(enumerate(cosine_sim[idx]))
+
+    cosine_sim = cosine_similarity(
+        tfidf_matrix[idx],
+        tfidf_matrix
+    )
+
+    sim_scores = list(enumerate(cosine_sim[0]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
-    # Get the scores of the 5 most similar recipes, excluding the recipe itself
     sim_scores = sim_scores[1:top_n + 1]
 
-    # Get the recipe indices
     recipe_indices = [i[0] for i in sim_scores]
 
-    # Return the top N most similar recipes
     return df.iloc[recipe_indices]
-
 
 # Pre-calculate TfidfVectorizer and cosine similarity for content-based recommendations
 tfidf = TfidfVectorizer(stop_words='english')
 tfidf_matrix = tfidf.fit_transform(recipes_13k_df['cleaned_ingredients'])
-cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
-indices = pd.Series(recipes_13k_df.index, index=recipes_13k_df['title']).drop_duplicates()
+indices = pd.Series(
+    recipes_13k_df.index,
+    index=recipes_13k_df['title']
+).drop_duplicates()
 
 # --- APP LAYOUT AND LOGIN/REGISTER FORM ---
 st.sidebar.title("Nutrimate Login")
@@ -423,7 +428,12 @@ if st.session_state.logged_in:
     selected_recipe = st.selectbox("Select a recipe you like:", recipe_titles)
 
     if st.button("Find Similar Recipes"):
-        similar_recipes = get_recipe_recommendations(selected_recipe, recipes_13k_df, cosine_sim, indices)
+        similar_recipes = get_recipe_recommendations(
+            selected_recipe,
+            recipes_13k_df,
+            tfidf_matrix,
+            indices
+        )
         if not similar_recipes.empty:
             st.subheader(f"Recipes similar to '{selected_recipe}':")
             for index, row in similar_recipes.iterrows():
