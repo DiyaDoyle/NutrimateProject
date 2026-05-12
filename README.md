@@ -1,8 +1,7 @@
 # Nutrimate️
 
 Live Demo
-
-https://your-streamlit-link.streamlit.app
+https://nutrimateproject-hnkwjuf4kbsvhh5hdyybnr.streamlit.app/
 
 Nutrimate is an AI-powered nutrition and recipe recommendation system built using Streamlit and machine learning techniques. The application provides personalized recipe recommendations based on dietary preferences, ingredients, and nutritional goals.
 
